@@ -2,6 +2,8 @@ import 'dart:io';
 
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
 import 'package:salonadvisor/data/haircut.dart';
 import 'package:salonadvisor/screens/resultsScreen.dart';
 import 'package:tflite/tflite.dart';
@@ -185,19 +187,37 @@ class _MyHomePageState extends State<MyHomePage> {
             )
           : Column(
               mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 Text(
                   'We are here to help you out to find the haircuts for your face shape',
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
-                ElevatedButton.icon(
-                    onPressed: () {
-                      setState(() {
-                        isCamopen = true;
-                      });
-                    },
-                    icon: Icon(Icons.camera),
-                    label: Text('Oppaaan')),
+                SizedBox(
+                  height: 25,
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(100),
+                  child: Image.network(
+                    _gender == Gender.male
+                        ? 'https://s.ygstatic.com/image/face-shape/avatar-oblong-man.1440.2da2b7c4-bd1.jpg'
+                        : 'https://coruzant.com/wp-content/uploads/2023/10/face-recognition.jpg',
+                    fit: BoxFit.cover,
+                    height: 150,
+                    width: 100,
+                  ),
+                ),
+                SizedBox(
+                  height: 25,
+                ),
+                // ElevatedButton.icon(
+                //     onPressed: () {
+                //       setState(() {
+                //         isCamopen = true;
+                //       });
+                //     },
+                //     icon: Icon(Icons.camera),
+                //     label: Text('Oppaaan')),
                 // Row(
                 //   children: [
                 //     ListTile(
@@ -224,6 +244,13 @@ class _MyHomePageState extends State<MyHomePage> {
                 //     ),
                 //   ],
                 // )
+                Text(
+                  'Your Gender:',
+                  style: TextStyle(fontWeight: FontWeight.w600, fontSize: 22),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -246,7 +273,46 @@ class _MyHomePageState extends State<MyHomePage> {
                         }),
                     Text('FEMALE'),
                   ],
-                )
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                SizedBox(
+                  width: 150,
+                  child: NeoPopButton(
+                    rightShadowColor: Color.fromARGB(255, 148, 148, 148),
+                    bottomShadowColor: Color.fromARGB(255, 97, 96, 96),
+                    color: Colors.black,
+                    onTapUp: () {
+                      HapticFeedback.vibrate();
+                      setState(() {
+                        isCamopen = true;
+                      });
+                    },
+                    onTapDown: () => HapticFeedback.vibrate(),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          Text(
+                            "Try",
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontStyle: FontStyle.italic,
+                                fontSize: 17),
+                          ),
+                          Icon(
+                            Icons.camera,
+                            color: Colors.white,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+
                 // InkWell(
                 //     onTap: () {
                 //       setState(() {

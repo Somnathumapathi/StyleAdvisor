@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
 import 'package:salonadvisor/data/haircut.dart';
 import 'package:salonadvisor/main.dart';
 
@@ -53,7 +55,10 @@ class _ResultScreenState extends State<ResultScreen> {
       ),
       body: Column(
         children: [
-          Text(widget.result),
+          Text(
+            widget.result,
+            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+          ),
           Text('Recommendations:'),
           ListView.builder(
               shrinkWrap: true,
@@ -65,7 +70,7 @@ class _ResultScreenState extends State<ResultScreen> {
                   // width: _scw,
                   padding: EdgeInsets.all(10),
                   decoration: BoxDecoration(
-                      color: Colors.black,
+                      color: Color.fromARGB(255, 91, 91, 91),
                       borderRadius: BorderRadius.circular(10)),
                   child: Row(
                     children: [
@@ -97,13 +102,34 @@ class _ResultScreenState extends State<ResultScreen> {
                   ),
                 );
               }),
-          TextButton(
-              onPressed: () {
+          // TextButton(onPressed: () {}, child: Text('Back to home')),
+          SizedBox(
+            width: 150,
+            child: NeoPopButton(
+              rightShadowColor: Color.fromARGB(255, 148, 148, 148),
+              bottomShadowColor: Color.fromARGB(255, 97, 96, 96),
+              color: Color.fromARGB(255, 1, 1, 1),
+              onTapUp: () {
+                HapticFeedback.vibrate();
                 Navigator.popUntil(context, (route) => false);
                 Navigator.push(context,
                     MaterialPageRoute(builder: (context) => MyHomePage()));
               },
-              child: Text('Back to home'))
+              onTapDown: () => HapticFeedback.vibrate(),
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "Back Home",
+                      style: TextStyle(color: Colors.white),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
