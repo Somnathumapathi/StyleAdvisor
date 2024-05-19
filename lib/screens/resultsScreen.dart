@@ -42,6 +42,7 @@ class _ResultScreenState extends State<ResultScreen> {
   fetchRecommendations() async {
     haircuts = await RecommendationServices.getRecommendations(
         gen: widget.gen, shape: widget.result);
+    if (haircuts == null) getList();
     setState(() {});
   }
 

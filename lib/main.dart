@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:camera/camera.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
@@ -77,7 +78,8 @@ class _MyHomePageState extends State<MyHomePage> {
   Gender _gender = Gender.male;
 
   loadInitCamera() {
-    _cameraController = CameraController(cameras![1], ResolutionPreset.medium);
+    final cI = kIsWeb ? 0 : 1;
+    _cameraController = CameraController(cameras![cI], ResolutionPreset.medium);
     _cameraController.initialize().then((_) {
       if (!mounted) {
         return;
@@ -148,14 +150,23 @@ class _MyHomePageState extends State<MyHomePage> {
                                 child: CircularProgressIndicator())
                           ])
                         : Center(
-                            child: AspectRatio(
-                              aspectRatio: 10 / 15,
-                              child: Container(
-                                // height: scHeight - 200,
-                                // width: scWidth - 10,
-                                child: CameraPreview(_cameraController),
+                            child: Stack(children: [
+                              AspectRatio(
+                                aspectRatio: kIsWeb ? (16 / 6) : (10 / 15),
+                                child: Container(
+                                  // height: scHeight - 200,
+                                  // width: scWidth - 10,
+                                  child: CameraPreview(_cameraController),
+                                ),
                               ),
-                            ),
+                              Positioned(
+                                bottom: scWidth / 6,
+                                child: Image.asset(
+                                  'assets/faceScan.png',
+                                  color: Colors.white,
+                                ),
+                              )
+                            ]),
                           ),
                     if (isLoading == false)
                       Positioned(
@@ -191,6 +202,7 @@ class _MyHomePageState extends State<MyHomePage> {
               children: [
                 Text(
                   'We are here to help you out to find the haircuts for your face shape',
+                  textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 SizedBox(
