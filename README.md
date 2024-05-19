@@ -1,6 +1,6 @@
 # salonadvisor
 
-A Flutter project which detects users face shape using tflite model and suggests haircuts accordingly.
+A Flutter project which detects users face shape using tflite model and suggests haircuts accordingly from the backend (Express js and supabase).
 
 ## Getting Started
 
