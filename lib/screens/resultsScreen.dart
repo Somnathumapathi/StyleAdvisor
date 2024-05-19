@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:neopop/widgets/buttons/neopop_button/neopop_button.dart';
 import 'package:salonadvisor/data/haircut.dart';
 import 'package:salonadvisor/main.dart';
+import 'package:salonadvisor/services/recommendationServices.dart';
 
 class ResultScreen extends StatefulWidget {
   const ResultScreen({super.key, required this.result, required this.gen});
@@ -14,7 +15,8 @@ class ResultScreen extends StatefulWidget {
 }
 
 class _ResultScreenState extends State<ResultScreen> {
-  late List<Haircut> haircuts;
+  List<Haircut>? haircuts;
+
   // final gen = Gender.male;
 
   getList() {
@@ -37,9 +39,15 @@ class _ResultScreenState extends State<ResultScreen> {
     }
   }
 
+  fetchRecommendations() async {
+    haircuts = await RecommendationServices.getRecommendations(
+        gen: widget.gen, shape: widget.result);
+    setState(() {});
+  }
+
   @override
   void initState() {
-    getList();
+    fetchRecommendations();
     super.initState();
   }
 
@@ -53,85 +61,107 @@ class _ResultScreenState extends State<ResultScreen> {
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,
       ),
-      body: Column(
-        children: [
-          Text(
-            widget.result,
-            style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-          ),
-          Text('Recommendations:'),
-          ListView.builder(
-              shrinkWrap: true,
-              itemCount: haircuts.length,
-              itemBuilder: (context, index) {
-                final hc = haircuts[index];
-                return Container(
-                  margin: EdgeInsets.all(10),
-                  // width: _scw,
-                  padding: EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                      color: Color.fromARGB(255, 91, 91, 91),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Row(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(100),
-                        child: Image.network(
-                          'https://qph.cf2.quoracdn.net/main-thumb-525070245-200-cxjdtfugvmuciptyczajjguqjwuwuoux.jpeg',
-                          height: 50,
-                          width: 50,
+      body: haircuts != null
+          ? Column(
+              children: [
+                Text(
+                  widget.result,
+                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+                ),
+                Text('Recommendations:'),
+                ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: haircuts!.length,
+                    itemBuilder: (context, index) {
+                      final hc = haircuts![index];
+                      return Container(
+                        margin: EdgeInsets.all(10),
+                        // width: _scw,
+                        padding: EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                            color: Color.fromARGB(255, 91, 91, 91),
+                            borderRadius: BorderRadius.circular(10)),
+                        child: Row(
+                          children: [
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(100),
+                              child: Image.network(
+                                hc.imgUrl,
+                                height: 100,
+                                width: 100,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            Expanded(
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Haircut : ${hc.haircutName}",
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  // TextButton(
+                                  //     onPressed: () {
+                                  //       RecommendationServices
+                                  //           .getRecommendations(
+                                  //               gen: widget.gen,
+                                  //               shape: widget.result);
+                                  //     },
+                                  //     child: Text('Test')),
+                                  Text(
+                                    hc.description,
+                                    maxLines: 3,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontStyle: FontStyle.italic
+                                        // overflow: TextOverflow.ellipsis,
+                                        ),
+                                  )
+                                ],
+                              ),
+                            )
+                          ],
                         ),
-                      ),
-                      Column(
+                      );
+                    }),
+                // TextButton(onPressed: () {}, child: Text('Back to home')),
+                SizedBox(
+                  width: 150,
+                  child: NeoPopButton(
+                    rightShadowColor: Color.fromARGB(255, 148, 148, 148),
+                    bottomShadowColor: Color.fromARGB(255, 97, 96, 96),
+                    color: Color.fromARGB(255, 1, 1, 1),
+                    onTapUp: () {
+                      HapticFeedback.vibrate();
+                      Navigator.popUntil(context, (route) => false);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => MyHomePage()));
+                    },
+                    onTapDown: () => HapticFeedback.vibrate(),
+                    child: Padding(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           Text(
-                            hc.haircutName,
+                            "Back Home",
                             style: TextStyle(color: Colors.white),
                           ),
-                          Text(
-                            hc.description,
-                            maxLines: 3,
-                            style: TextStyle(
-                              color: Colors.white,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          )
                         ],
-                      )
-                    ],
-                  ),
-                );
-              }),
-          // TextButton(onPressed: () {}, child: Text('Back to home')),
-          SizedBox(
-            width: 150,
-            child: NeoPopButton(
-              rightShadowColor: Color.fromARGB(255, 148, 148, 148),
-              bottomShadowColor: Color.fromARGB(255, 97, 96, 96),
-              color: Color.fromARGB(255, 1, 1, 1),
-              onTapUp: () {
-                HapticFeedback.vibrate();
-                Navigator.popUntil(context, (route) => false);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (context) => MyHomePage()));
-              },
-              onTapDown: () => HapticFeedback.vibrate(),
-              child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text(
-                      "Back Home",
-                      style: TextStyle(color: Colors.white),
+                      ),
                     ),
-                  ],
+                  ),
                 ),
-              ),
+              ],
+            )
+          : Center(
+              child: CircularProgressIndicator(),
             ),
-          ),
-        ],
-      ),
     );
   }
 }

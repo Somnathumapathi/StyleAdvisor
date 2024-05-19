@@ -3,6 +3,19 @@ import 'dart:convert';
 
 enum Gender { male, female }
 
+extension GenderParsing on String {
+  Gender parseGen() {
+    switch (this) {
+      case 'Gender.male':
+        return Gender.male;
+      case 'Gender.female':
+        return Gender.female;
+      default:
+        return Gender.male;
+    }
+  }
+}
+
 class Haircut {
   final String shape;
   final String haircutName;
@@ -15,6 +28,31 @@ class Haircut {
       required this.imgUrl,
       required this.gen,
       required this.description});
+
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'shape': shape,
+      'haircutName': haircutName,
+      'imgUrl': imgUrl,
+      'gen': gen,
+      'description': description,
+    };
+  }
+
+  factory Haircut.fromMap(Map<String, dynamic> map) {
+    return Haircut(
+      shape: map['shape'] as String,
+      haircutName: map['haircutName'] as String,
+      imgUrl: map['imgUrl'] as String,
+      gen: (map['gen'] as String).parseGen(),
+      description: map['description'] as String,
+    );
+  }
+
+  String toJson() => json.encode(toMap());
+
+  factory Haircut.fromJson(String source) =>
+      Haircut.fromMap(json.decode(source) as Map<String, dynamic>);
 }
 
 // Map<String, dynamic> toMap() {

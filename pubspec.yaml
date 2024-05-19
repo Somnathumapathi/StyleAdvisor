@@ -38,6 +38,7 @@ dependencies:
   tflite: ^1.1.2
   camera: ^0.10.5+9
   neopop: ^1.0.2
+  dio: ^5.4.3+1
 
 dev_dependencies:
   flutter_test:
